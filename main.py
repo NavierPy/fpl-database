@@ -14,8 +14,8 @@ for i in range(1,j+1):
     jugadores.extend(jugadores_i)
     encuentros.extend(encuentros_i)
 
-jugadores_df = pd.DataFrame(jugadores, columns=["Nombre", "Posición", "Puntos", "Equipo", "Oponente", "Juega", "Eventos"])
-encuentros_df = pd.DataFrame(encuentros,  columns =['Equipo local','Equipo visitante', 'Resultado'])
+jugadores_df = pd.DataFrame(jugadores, columns=["Jornada", "Nombre", "Posición", "Puntos", "Equipo", "Oponente", "Juega", "Eventos"])
+encuentros_df = pd.DataFrame(encuentros,  columns =['Jornada', 'Equipo local','Equipo visitante', 'Resultado'])
 
  
 ### Se generan las tres tablas: 
@@ -50,13 +50,13 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
 i=1
 
 for index, row in jugadores_df.iterrows():
-    nombre, posicion, puntos, equipo, equipo_rival, localidad, eventos = list(row)
+    j, nombre, posicion, puntos, equipo, equipo_rival, localidad, eventos = list(row)
     
     goles = eventos.count("Gol")
     asistencias = eventos.count("Asistencia")
     tarjetas_amarillas = eventos.count("Tarjeta amarilla")
     tarjetas_rojas = eventos.count("Tarjeta roja")
-    
+
     valores_jugadores = (i, nombre, equipo, posicion)
     valores_resultados = (i, nombre, j, puntos, goles, asistencias, tarjetas_amarillas, tarjetas_rojas)
     i+=1
@@ -82,7 +82,7 @@ VALUES (%s, %s, %s, %s);
 
 i=1
 for index, row in encuentros_df.iterrows():
-    equipo_local, equipo_visitante, resultado = list(row)
+    j, equipo_local, equipo_visitante, resultado = list(row)
     
     if not resultado[0]==resultado[1]=="-":
         valores_partidos = (i, j, equipo_local, equipo_visitante, resultado[0], resultado[1])
