@@ -34,7 +34,7 @@ def recabar(j):
         visitante = partido.find("div", itemprop="awayTeam").find(itemprop="name")["content"]
         
         lista_clubes.extend([local, visitante])
-        lista_encuentros.append((local, visitante, marcador))
+        lista_encuentros.append((j, local, visitante, marcador))
     
     # Inicializamos algunas listas y la variable n para ir alternando oponentes:
     lista_jugadores=[]
@@ -60,7 +60,7 @@ def recabar(j):
             localidad = "local" if lista_clubes.index(club) % 2 == 0 else "visitante"
     
             # Añadimos el registro del jugador a la lista de jugadores:
-            lista_jugadores.append([nombre, posicion, puntuacion, club, oponente, localidad, eventos])
+            lista_jugadores.append([j, nombre, posicion, puntuacion, club, oponente, localidad, eventos])
 
         n+=1   # Este índice sirve para alternar oponentes
     
