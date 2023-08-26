@@ -2,7 +2,7 @@ import psycopg2
 
 def query(peticion, valores=False):
     # Conecta a una base de datos existente
-    conn = psycopg2.connect(dbname="premier", user="postgres", password="postgres", port='5433')
+    conn = psycopg2.connect(dbname="postgres", user="postgres", password="postgres", port='5432')
     
     # Inicializa un cursor para realizar las operaciones
     cur = conn.cursor()
