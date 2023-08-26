@@ -37,7 +37,8 @@ def create_tables():
       id SERIAL PRIMARY KEY,
       nombre varchar UNIQUE NOT NULL,
       equipo varchar REFERENCES equipos(nombre),
-      posicion varchar
+      posicion varchar,
+      precio integer
     
     );
     """
@@ -49,7 +50,9 @@ def create_tables():
       local varchar REFERENCES equipos(nombre),
       visitante varchar REFERENCES equipos(nombre),
       goles_local integer,
-      goles_visitante integer
+      goles_visitante integer,
+      UNIQUE (jornada, local),
+      UNIQUE (jornada, visitante)
     
     );
     """
@@ -63,7 +66,8 @@ def create_tables():
       goles integer,
       asistencias integer,
       tarjetas_amarillas integer,
-      tarjetas_rojas integer
+      tarjetas_rojas integer,
+      UNIQUE (jornada, jugador)
     
     );
     """
