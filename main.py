@@ -2,8 +2,11 @@ import module
 import pandas as pd
 from db_functions import query, create_tables
 
+
+
 ### Se recaba la información y se almacena en 3 dataframes: 
   
+    
 j0 = 1  # Primera jornada a recabar
 jf = 3  # Última jornada a recabar
 
@@ -19,7 +22,9 @@ jugadores_df = pd.DataFrame(jugadores, columns=["Jornada", "Nombre", "Posición"
 encuentros_df = pd.DataFrame(encuentros,  columns =['Jornada', 'Equipo local','Equipo visitante', 'Resultado'])
 
  
-### Se generan las tres tablas: 
+### Generamos las tres tablas:
+    
+    
 try:
     create_tables() # Comentar esta línea si solo se está actualizando la base de datos
 except:
@@ -46,8 +51,8 @@ for equipo in lista_equipos:
 # Los jugadores y los resultados:
     
 jugadores_string = """
-INSERT INTO jugadores (nombre, equipo, posicion)
-VALUES (%s, %s, %s);
+INSERT INTO jugadores (nombre, equipo, posicion, precio)
+VALUES (%s, %s, %s, %s);
 """
 resultados_string = """
 INSERT INTO resultados (jugador, jornada, puntos, goles, asistencias, tarjetas_amarillas, tarjetas_rojas)
@@ -61,15 +66,21 @@ for index, row in jugadores_df.iterrows():
     asistencias = eventos.count("Asistencia")
     tarjetas_amarillas = eventos.count("Tarjeta amarilla")
     tarjetas_rojas = eventos.count("Tarjeta roja")
-
-    valores_jugadores = (nombre, equipo, posicion)
-    valores_resultados = (nombre, j, puntos, goles, asistencias, tarjetas_amarillas, tarjetas_rojas)
     
+    try:
+        precio = module.recabar_precio(nombre)
+    except:
+        precio = None
+    
+    valores_jugadores = (nombre, equipo, posicion, precio)
+
     try:
         query(jugadores_string, valores_jugadores)
     except:
         pass
+
     
+    valores_resultados = (nombre, j, puntos, goles, asistencias, tarjetas_amarillas, tarjetas_rojas)    
     query(resultados_string, valores_resultados)    
 
 
@@ -80,20 +91,11 @@ INSERT INTO partidos (jornada, local, visitante, goles_local, goles_visitante)
 VALUES (%s, %s, %s, %s, %s);
 """
 
-partidos_string_missingdata = """
-INSERT INTO partidos (jornada, local, visitante)
-VALUES (%s, %s, %s);
-"""
-
 for index, row in encuentros_df.iterrows():
     j, equipo_local, equipo_visitante, resultado = list(row)
     
-    if not resultado[0]==resultado[1]=="-":
-        valores_partidos = (j, equipo_local, equipo_visitante, resultado[0], resultado[1])
+    if resultado[0]==resultado[1]=="-":
+        resultado = (None, None)
         
-        query(partidos_string, valores_partidos)
-    
-    else:
-        valores_partidos = (j, equipo_local, equipo_visitante)
-        
-        query(partidos_string_missingdata, valores_partidos)            
+    valores_partidos = (j, equipo_local, equipo_visitante, resultado[0], resultado[1])
+    query(partidos_string, valores_partidos)
