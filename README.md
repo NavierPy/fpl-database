@@ -33,4 +33,6 @@ Password: postgres
 
 ## Missing features
 
-* Implement the necessary changes to be able to update an existing database. Specifically, allow to set from which day to start collecting information (for example: from 3 to 7), implement a try-except for the line that creates the 4 tables and add auto-increment for all ids.
+* Collect information on player pricing history
+* Implement knapsack problem solver
+* Implement a user interface
