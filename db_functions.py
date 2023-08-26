@@ -26,7 +26,7 @@ def create_tables():
     
     first_table = """
     CREATE TABLE equipos (
-      id integer PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       nombre varchar UNIQUE NOT NULL
     
     );
@@ -34,7 +34,7 @@ def create_tables():
     
     second_table = """
     CREATE TABLE jugadores (
-      id integer PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       nombre varchar UNIQUE NOT NULL,
       equipo varchar REFERENCES equipos(nombre),
       posicion varchar
@@ -44,7 +44,7 @@ def create_tables():
     
     third_table = """
     CREATE TABLE partidos (
-      id integer PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       jornada integer,
       local varchar REFERENCES equipos(nombre),
       visitante varchar REFERENCES equipos(nombre),
@@ -56,7 +56,7 @@ def create_tables():
     
     four_table = """
     CREATE TABLE resultados (
-      id integer PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       jugador varchar REFERENCES jugadores(nombre) NOT NULL,
       jornada integer,
       puntos integer,
