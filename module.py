@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+from unidecode import unidecode
 
 
      
@@ -66,3 +67,23 @@ def recabar(j):
     
 
     return(lista_jugadores, lista_encuentros, lista_clubes)
+
+
+
+
+def recabar_precio(nombre):
+    
+    jugador = unidecode(nombre).lower().replace(' ', '-').replace("'", "")
+    if jugador=='gross': jugador='gros'   # Por un error de trasliteración de la página ("ß" debería ser "ss", no "s")
+        
+    link = 'https://www.jornadaperfecta.com/premier/jugador/{}'.format(jugador)
+           
+    webpage_response = requests.get(link)
+    webpage = webpage_response.content
+    soup = BeautifulSoup(webpage, "html.parser")
+          
+    historial = soup.find("div", {"class": "column-jp w-50 center mr-12 card fixed"})
+        
+    precio = historial.text.split()[-1].replace('.', '').replace('€', '')
+    
+    return(precio)
