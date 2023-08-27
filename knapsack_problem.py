@@ -48,7 +48,7 @@ def create_dataframe():
     
 
 
-def solve_problem(formation, BUDGET):
+def solve_problem(formation, BUDGET, data=create_dataframe().dropna(subset=['value'])):
     """
     Resuelve el "knapsack problem" para un equipo de fútbol en función de una formación y un presupuesto dados.
 
@@ -63,7 +63,6 @@ def solve_problem(formation, BUDGET):
     """
     
     fo = str(formation)
-    data = create_dataframe().dropna(subset=['value'])
 
     # Variables auxiliares:
     POS = data.position.unique()
@@ -108,13 +107,16 @@ def solve_problem(formation, BUDGET):
         price = data.value[int(v.name.split("_")[1])]
         precio_total += price
         puntuacion_total += point
-        data_list.append([name, position, point, price])
+        data_list.append([name, position, round(point,1), price])
     
     data_df = pd.DataFrame(data_list, columns=["Nombre", "Posicion", "Puntuacion", "Precio"])
     
+    print(data_df.sort_values(by='Posicion'))
     print("")
     print("Precio total:", precio_total)
     print("Puntuación total:", puntuacion_total)
     return(data_df)
 
-resultado = solve_problem(352, 40E6)
+if __name__ == "__main__":
+    resultado = solve_problem(352, 40E6)
+    
