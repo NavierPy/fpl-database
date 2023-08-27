@@ -1,9 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
 from unidecode import unidecode
-
-
-     
+from db_functions import query, create_tables
+import pandas as pd
+from knapsack_problem import solve_problem, create_dataframe
+ 
     
 def scrapear(j):
     link = 'https://www.jornadaperfecta.com/premier/puntos/?idJornada={}'.format(j)
@@ -87,3 +88,160 @@ def recabar_precio(nombre):
     precio = historial.text.split()[-1].replace('.', '').replace('€', '')
     
     return(precio)
+
+    
+
+
+def create_dataframes(j0, jf):
+    
+    ### Se recaba la información y se almacena en 3 dataframes: 
+
+    jugadores, encuentros, lista_equipos = [], [], []
+    
+    for i in range(j0,jf+1):
+        jugadores_i, encuentros_i, lista_equipos = recabar(i)
+        
+        jugadores.extend(jugadores_i)
+        encuentros.extend(encuentros_i)
+    
+    jugadores_df = pd.DataFrame(jugadores, columns=["Jornada", "Nombre", "Posición", "Puntos", "Equipo", "Oponente", "Juega", "Eventos"])
+    encuentros_df = pd.DataFrame(encuentros,  columns =['Jornada', 'Equipo local','Equipo visitante', 'Resultado'])
+    
+    return(jugadores_df, encuentros_df, lista_equipos)
+
+
+
+    
+def actualizar_tablas(j0, jf):
+    
+    jugadores_df, encuentros_df, lista_equipos = create_dataframes(j0, jf)
+
+    try:
+        create_tables()
+    except:
+        pass
+    
+    
+    ### Añadimos los registros a la base de datos:
+    
+        
+    # Los equipos:
+    
+    equipos_string = """
+    INSERT INTO equipos (nombre)
+    VALUES (%s);
+    """
+    
+    for equipo in lista_equipos:
+        try: 
+            query(equipos_string, (equipo,)) 
+        except: 
+            pass
+    
+    
+    # Los jugadores y los resultados:
+        
+    jugadores_string = """
+    INSERT INTO jugadores (nombre, equipo, posicion, precio)
+    VALUES (%s, %s, %s, %s);
+    """
+    resultados_string = """
+    INSERT INTO resultados (jugador, jornada, puntos, goles, asistencias, tarjetas_amarillas, tarjetas_rojas)
+    VALUES (%s, %s, %s, %s, %s, %s, %s);
+    """
+    
+    for index, row in jugadores_df.iterrows():
+        j, nombre, posicion, puntos, equipo, equipo_rival, localidad, eventos = list(row)
+        
+        goles = eventos.count("Gol")
+        asistencias = eventos.count("Asistencia")
+        tarjetas_amarillas = eventos.count("Tarjeta amarilla")
+        tarjetas_rojas = eventos.count("Tarjeta roja")
+        
+        try:
+            precio = recabar_precio(nombre)
+        except:
+            precio = None
+        
+        valores_jugadores = (nombre, equipo, posicion, precio)
+    
+        try:
+            query(jugadores_string, valores_jugadores)
+        except:
+            pass
+      
+        valores_resultados = (nombre, j, puntos, goles, asistencias, tarjetas_amarillas, tarjetas_rojas)    
+           
+        try:
+            query(resultados_string, valores_resultados) 
+        except:
+            pass
+    
+    # Los partidos: 
+        
+    partidos_string = """
+    INSERT INTO partidos (jornada, local, visitante, goles_local, goles_visitante)
+    VALUES (%s, %s, %s, %s, %s);
+    """
+    
+    for index, row in encuentros_df.iterrows():
+        j, equipo_local, equipo_visitante, resultado = list(row)
+        
+        if resultado[0]==resultado[1]=="-":
+            resultado = (None, None)
+            
+        valores_partidos = (j, equipo_local, equipo_visitante, resultado[0], resultado[1])
+        try:
+            query(partidos_string, valores_partidos)
+        except:
+            pass
+        
+        
+
+
+def actualizar_precios():
+    
+    consulta = "SELECT MAX(jornada) FROM partidos"
+    jf = query(consulta)[0][0]
+
+    jugadores_df, encuentros_df, lista_equipos = create_dataframes(1, jf)
+    
+    for index, row in jugadores_df.iterrows():
+        j, nombre, posicion, puntos, equipo, equipo_rival, localidad, eventos = list(row)
+        try:
+            precio = recabar_precio(nombre) # Comenta esta línea para evitar saturar el servidor
+            # precio = 0 # Descomenta esta línea para evitar saturar el servidor
+        except:
+            precio = None         
+        
+        string = """
+        UPDATE jugadores
+        SET precio = %s
+        WHERE nombre = %s
+        """
+        
+        valores = (precio, nombre)
+        
+        query(string, valores)
+        
+
+
+
+def once_ideal(presupuesto, data=create_dataframe().dropna(subset=['value'])):
+    
+    alineaciones = [343, 352, 433, 442, 451, 532, 541, 361, 334, 424, 460, 523]
+    
+    puntuaciones = []
+    for alineacion in alineaciones:
+        puntuaciones.append(solve_problem(alineacion, presupuesto, data)[0])
+        
+    
+    ganadora = alineaciones[puntuaciones.index(max(puntuaciones))]
+    
+    puntuacion_total, precio_total, fo, data_df = solve_problem(ganadora, presupuesto, data)
+    
+    print(data_df)
+    print("")
+    print("Alineación:", '-'.join(fo))
+    print("Precio total:", precio_total)
+    print("Puntuación total:", round(puntuacion_total,0))
