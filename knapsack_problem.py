@@ -109,14 +109,10 @@ def solve_problem(formation, BUDGET, data=create_dataframe().dropna(subset=['val
         puntuacion_total += point
         data_list.append([name, position, round(point,1), price])
     
-    data_df = pd.DataFrame(data_list, columns=["Nombre", "Posicion", "Puntuacion", "Precio"])
+    data_df = pd.DataFrame(data_list, columns=["Nombre", "Posicion", "Puntuacion esperada", "Precio"])
     
-    print(data_df.sort_values(by='Posicion'))
-    print("")
-    print("Precio total:", precio_total)
-    print("Puntuación total:", puntuacion_total)
-    return(data_df)
+    data_df['Posicion'] = pd.Categorical(data_df['Posicion'], categories=['PT', 'DF', 'MC', 'DL'], ordered=True)
+    data_df = data_df.sort_values(by='Posicion')
 
-if __name__ == "__main__":
-    resultado = solve_problem(352, 40E6)
+    return(puntuacion_total, precio_total, fo, data_df)
     
