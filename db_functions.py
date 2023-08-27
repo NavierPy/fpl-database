@@ -16,6 +16,11 @@ def query(peticion, valores=False):
     # Hace que los cambios sean persistentes
     conn.commit()
     
+    # Obtiene los resultados si es una consulta SELECT
+    if peticion.strip().lower().startswith("select"):
+        results = cur.fetchall()
+        return results
+    
     # Termina la comunicación con la base de datos
     cur.close()
     conn.close()
@@ -57,7 +62,7 @@ def create_tables():
     );
     """
     
-    four_table = """
+    fourth_table = """
     CREATE TABLE resultados (
       id SERIAL PRIMARY KEY,
       jugador varchar REFERENCES jugadores(nombre) NOT NULL,
@@ -75,5 +80,8 @@ def create_tables():
     query(first_table)
     query(second_table)
     query(third_table)
-    query(four_table)
+    query(fourth_table)
+
+
+
 
