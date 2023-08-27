@@ -36,13 +36,16 @@ Password: postgres
 ## How to use
 
 * Open main.py and set the first and last matchdays for which you want to collect the data.
-* Run the file.
+* Uncomment the line that says "update_tables(j0, jf)".
 * Your database is now complete with the required information, open Postbird to check it.
 
 After this, you can solve the knapsack problem for a given formation and budget:
 
-* Open knapsack_problem.py, navigate to the end of the file and in the line where it says "result = solve_problem(352, 40E6)" replace the "352" by your desired alignment (for example: for 3-3-4, type 334) and the "40E6" by your budget (you can do it in scientific notation, for example: for 10 million, type 10E6).
+* Use "once_ideal(presupuesto)" to get the expected dream team among all premier league players and for the formation that maximizes the total points.
+* Use "run_gui()" to do the same but with a subset of players from the league that you can choose via a graphical interface. In this case you will be asked via the console for your budget and if you want to update the price information.
+
+If you want to be able to fix the formation, in either case, you will have to make some small modifications to the code and use the function "solve_problem(formation, budget, players_dataframe)".
 
 ## Missing features
 
-* Implement a user interface.
+* Finish implementing the decision making flow in the user interface (and not in the terminal)..
