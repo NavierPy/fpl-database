@@ -42,9 +42,11 @@ Password: postgres
 After this, you can solve the knapsack problem for a given formation and budget:
 
 * Use "once_ideal(presupuesto)" to get the expected dream team among all premier league players and for the formation that maximizes the total points.
-* Use "run_gui()" to do the same but with a subset of players from the league that you can choose via a graphical interface. In this case you will be asked via the console for your budget and if you want to update the price information.
+* Use "run_gui()" to do the same but with a subset of players from the league that you can choose via a graphical interface. In this case you will be asked via the console for your budget.
 
 If you want to be able to fix the formation, in either case, you will have to make some small modifications to the code and use the function "solve_problem(formation, budget, players_dataframe)".
+
+Please note that, in order to avoid overloading the provider's website with requests, when updating the database with a new matchday, only the prices of the players who played that matchday will be updated. To update the total number of players, use the "actualizar_precios()" function.
 
 ## Missing features
 
