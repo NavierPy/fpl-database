@@ -10,6 +10,9 @@ jf = 3  # Última jornada a recabar
 # Descomentar esta línea para actualizar la base de datos:
 # actualizar_tablas(j0, jf)
 
+# Descomentar esta línea para actualizar los precios de los jugadores:
+# actualizar_precios()
+
 # Descomentar estas líneas para calcular el once ideal previsto para un presupuesto dado:
 # presupuesto = 40E6 
 # once_ideal(presupuesto)
