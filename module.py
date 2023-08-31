@@ -197,6 +197,27 @@ def actualizar_tablas(j0, jf):
             pass
         
         
+def actualizar_estos_precios(subset):
+      
+    for nombre in subset:
+        try:
+            precio = recabar_precio(nombre)
+        except:
+            precio = None         
+        
+        string = """
+        UPDATE jugadores
+        SET precio = %s
+        WHERE nombre = %s
+        """
+        
+        print(f"Actualizando precios ({subset.index(nombre)+1}/{len(subset)})...")
+        
+        valores = (precio, nombre)
+        
+        query(string, valores)
+        
+
 
 
 def actualizar_precios():
