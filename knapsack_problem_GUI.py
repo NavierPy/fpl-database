@@ -1,6 +1,6 @@
 from pulp import *
 from knapsack_problem import create_dataframe, solve_problem
-from module import actualizar_precios, once_ideal
+from module import actualizar_estos_precios, once_ideal
 import pandas as pd
 import tkinter as tk
 from tkinter import ttk
@@ -139,11 +139,10 @@ def run_gui():
     print(subset)
     print("---")
     
+    actualizar_estos_precios(subset)
+    
     data = create_dataframe()
 
-    print("¿Desea actualizar los precios? :")
-    if input()=="Sí":
-        actualizar_precios()
 
     presupuesto = float(input("¿Cuál es el presupuesto? :"))
 
