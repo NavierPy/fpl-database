@@ -50,4 +50,4 @@ Please note that, in order to avoid overloading the provider's website with requ
 
 ## Missing features
 
-* Finish implementing the decision making flow in the user interface (and not in the terminal)..
+* Finish implementing the decision making flow in the user interface (and not in the terminal).
