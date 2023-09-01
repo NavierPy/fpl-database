@@ -48,7 +48,7 @@ def create_dataframe():
     
 
 
-def solve_problem(formation, BUDGET, data=create_dataframe().dropna(subset=['value'])):
+def solve_problem(formation, BUDGET, data=create_dataframe()):
     """
     Resuelve el "knapsack problem" para un equipo de fútbol en función de una formación y un presupuesto dados.
 
@@ -62,6 +62,8 @@ def solve_problem(formation, BUDGET, data=create_dataframe().dropna(subset=['val
                                     incluyendo nombre, posición, puntuación y precio.
     """
     
+    data.dropna(subset=['value'])  # Se eliminan los jugadores sin precio, pero no se imprime en pantalla para no saturar.
+        
     fo = str(formation)
 
     # Variables auxiliares:
