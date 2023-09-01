@@ -196,7 +196,9 @@ def actualizar_tablas(j0, jf):
         except:
             pass
         
-        
+
+
+
 def actualizar_estos_precios(subset):
       
     for nombre in subset:
@@ -248,8 +250,14 @@ def actualizar_precios():
 
 
 
-def once_ideal(presupuesto, data=create_dataframe().dropna(subset=['value'])):
+def once_ideal(presupuesto, data=create_dataframe()):
     
+    nan_rows = data[data.isna().any(axis=1)]
+    if not nan_rows.empty:
+        data = data.dropna(subset=['value'])
+        print(""" Se han eliminado los siguientes jugadores por no disponer
+        de información sobre su precio: """, nan_rows["name"].tolist())
+
     alineaciones = [343, 352, 433, 442, 451, 532, 541, 361, 334, 424, 460, 523]
     
     puntuaciones = []
