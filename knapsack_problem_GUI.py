@@ -21,13 +21,12 @@ class KnapsackApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Football Team Selection")
-        self.root.geometry("800x600")  # Establecer tamaño predeterminado de la ventana
+        self.root.geometry("1000x600")
         self.selected_players = []
-        # Crear un DataFrame de ejemplo (reemplaza esto con tu propio DataFrame)
         data = create_dataframe()
         self.original_data = data.dropna(subset=['value'])
         self.df = pd.DataFrame(self.original_data)
-        self.sorting_order = {}  # Almacenar el orden actual de ordenación
+        self.sorting_order = {}  # Almacenar el orden actual
         
         self.create_widgets()
 
