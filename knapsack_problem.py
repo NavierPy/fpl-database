@@ -23,9 +23,20 @@ def promedio(jugador):
 
 def create_dataframe():
     
+    factor = """ (
+                   SELECT COUNT(*)
+                   FROM resultados
+                   WHERE jugador = j.nombre
+               ) / (
+                   SELECT MAX(jornada)
+                   FROM resultados
+               ) """
+    
+    # Set factor=1 if you do not want to take into account unplayed matches.
+        
     # Consulta para obtener el nombre, equipo, posición, precio y puntuación promedio de todos los jugadores
-    consulta = """
-        SELECT j.nombre, j.equipo, j.posicion, j.precio, AVG(r.puntos) as puntuacion_promedio
+    consulta = f"""
+        SELECT j.nombre, j.equipo, j.posicion, j.precio, AVG(r.puntos) * {factor} as puntuacion_promedio
         FROM jugadores j
         JOIN resultados r ON j.nombre = r.jugador
         GROUP BY j.nombre, j.equipo, j.posicion, j.precio
