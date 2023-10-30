@@ -83,9 +83,7 @@ def recabar_precio(nombre):
     webpage = webpage_response.content
     soup = BeautifulSoup(webpage, "html.parser")
           
-    historial = soup.find("div", {"class": "column-jp w-50 center mr-12 card fixed"})
-        
-    precio = historial.text.split()[-1].replace('.', '').replace('€', '')
+    precio = soup.find("div", class_="row-jp full-width space-between p-4 separator").find_all("div")[1].text.replace(".", "").replace("€", "")
     
     return(precio)
 
